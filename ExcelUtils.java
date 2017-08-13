@@ -1,7 +1,9 @@
-package com.fourstay.utilities;
+package utilities;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -14,6 +16,7 @@ public class ExcelUtils {
     private static XSSFCell cell;
     private static XSSFRow row;
     private static String excelFilePath;
+ 
     
     //This method is to set the File path and to open the Excel file, Pass Excel Path and Sheetname as Arguments to this method
     public static void openExcelFile(String path,String sheetName) {
@@ -24,6 +27,8 @@ public class ExcelUtils {
             // Access the required test data sheet
             excelWBook = new XSSFWorkbook(ExcelFile);
             excelWSheet = excelWBook.getSheet(sheetName);
+            
+            
             
             } catch (Exception e){
                 e.printStackTrace();
@@ -45,17 +50,26 @@ public class ExcelUtils {
    
     
     //This method is to write in the Excel cell, Row num and Col num are the parameters 
-	public static void setCellData(String value,  int rowNum, int colNum) {
-           try{
+	public static void setCellData(String value,  int rowNum, int colNum, String color) {
+		
+		if(color.equalsIgnoreCase("green")) {
+			try{
               row  = excelWSheet.getRow(rowNum);
               cell = row.getCell(colNum);
-                
+              CellStyle style = excelWBook.createCellStyle();
+              
+              style.setFillForegroundColor(IndexedColors.GREEN.getIndex());
+              style.setFillPattern(CellStyle.SOLID_FOREGROUND);  
+              
               if(cell == null) {
                  cell = row.createCell(colNum);
                  cell.setCellValue(value);
               } else {
                  cell.setCellValue(value);
               }
+              
+              cell.setCellStyle(style);
+              
               // Constant variables Test Data path and Test Data file name
               FileOutputStream fileOut = new FileOutputStream(excelFilePath);
               excelWBook.write(fileOut);
@@ -64,6 +78,56 @@ public class ExcelUtils {
             }catch(Exception e){
                  e.printStackTrace();
             }
+		}else if(color.equalsIgnoreCase("red")) {
+			
+			try{
+              row  = excelWSheet.getRow(rowNum);
+              cell = row.getCell(colNum);
+              
+              CellStyle style = excelWBook.createCellStyle();
+              style.setFillForegroundColor(IndexedColors.RED.getIndex());
+              style.setFillPattern(CellStyle.SOLID_FOREGROUND);  
+              
+              if(cell == null) {
+                 cell = row.createCell(colNum);
+                 cell.setCellValue(value);
+              } else {
+                 cell.setCellValue(value);
+              }
+              
+              cell.setCellStyle(style);
+              
+              // Constant variables Test Data path and Test Data file name
+              FileOutputStream fileOut = new FileOutputStream(excelFilePath);
+              excelWBook.write(fileOut);
+               
+              fileOut.close();
+            }catch(Exception e){
+                 e.printStackTrace();
+            }
+		}else {
+			try{
+	              row  = excelWSheet.getRow(rowNum);
+	              cell = row.getCell(colNum);    
+	              
+	              if(cell == null) {
+	                 cell = row.createCell(colNum);
+	                 cell.setCellValue(value);
+	              } else {
+	                 cell.setCellValue(value);
+	              }	              	              
+	              
+	              // Constant variables Test Data path and Test Data file name
+	              FileOutputStream fileOut = new FileOutputStream(excelFilePath);
+	              excelWBook.write(fileOut);
+	               
+	              fileOut.close();
+	            }catch(Exception e){
+	                 e.printStackTrace();
+	            }
+		}
+	
+		
     }
         
 
